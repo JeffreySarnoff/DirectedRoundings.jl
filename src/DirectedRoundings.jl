@@ -122,13 +122,32 @@ end
 
 # other Floats
 
-@inline round_fromzero(fn::Function, a::T) where {T<:AbstractFloat} =
-    -rounded(fn, -a, RoundToZero)
-@inline round_fromzero(fn::Function, a::T, b::T) where {T<:AbstractFloat} =
-    -rounded(fn, -a, -b, RoundToZero)
-@inline round_fromzero(fn::Function, a::T, b::T, c::T) where {T<:AbstractFloat} =
-    -rounded(fn, -a, -b, -c, RoundToZero)
-@inline round_fromzero(fn::Function, a::T, b::T, c::T, d::T) where {T<:AbstractFloat} =
--rounded(fn, -a, -b, -c, -d, RoundToZero)
+@inline function round_fromzero(fn::Function, a::T) where {T<:AbstractFloat}
+    signbit(a) ? round_down(fn, a) : round_up(fn, a)
+end
+
+@inline function round_fromzero(fn::Function, a::T, b::T) where {T<:AbstractFloat}
+    result = round_up(a, b)
+    if result < 0
+       result = round_down(a, b)
+    end
+    return result
+end
+
+@inline function round_fromzero(fn::Function, a::T, b::T, c::T) where {T<:AbstractFloat}
+    result = round_up(a, b, c)
+    if result < 0
+       result = round_down(a, b, c)
+    end
+    return result
+end
+
+@inline function round_fromzero(fn::Function, a::T, b::T, c::T, d::T) where {T<:AbstractFloat}
+    result = round_up(a, b, c, d)
+    if result < 0
+       result = round_down(a, b, c, d)
+    end
+    return result
+end
 
 end # DirectedRoundings module
