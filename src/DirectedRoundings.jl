@@ -4,6 +4,13 @@ export round_nearest, round_up, round_down,
        round_tozero, round_fromzero,
        round_nearest_tiesaway, round_nearest_tiesup
 
+import Base: +, -, *, /, \, hypot, sqrt, cbrt,
+             div, fld, cld, mod, rem, divrem, fldmod,
+             abs, flipsign, copysign
+
+export  +, -, *, /, \, hypot, sqrt, cbrt,
+        div, fld, cld, mod, rem, divrem, fldmod,
+        abs, flipsign, copysign
 
 #=
     •    RoundNearest (default)
