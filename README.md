@@ -60,8 +60,10 @@ end
 
 a = 3.0;         aa =  eps(a)/2;
 b = inv(17.0);   bb =  eps(b)/2;
-c = 3.0f0;       cc = -eps(c)  ;
-d = inv(17.0f0); dd = -eps(d)/2;
+c = sqrt(17.0);  cc =  eps(c)/2;
+d = 128.0;       bb =  eps(d)/2;
+e = 3.0f0;       cc = -eps(c)  ;
+f = inv(17.0f0); dd = -eps(d)/2;
 
 round_nearest(inv,a)
 round_up(inv, a)
