@@ -63,24 +63,21 @@ b = inv(17.0);   bb =  eps(b)/2;
 c = 3.0f0;       cc = -eps(c)  ;
 d = inv(17.0f0); dd = -eps(d)/2;
 
-round_nearest(sqrt,a)
-round_up(sqrt, a)
-round_down(sqrt, a)
-round_tozero(sqrt, a)
-round_fromzero(sqrt, a)
+round_nearest(inv,a)
+round_up(inv, a)
+round_down(inv, a)
+round_tozero(inv, a)
+round_fromzero(inv, a)
 
 round_up(+, a, b)
 round_down(hypot, a, b)
 
+round_up(affine_map, a, b, c)
+round_down(affine_map, a, b, c)
 
-round_up(sum3, a, b, c)
-round_down(sum3, a, b, c)
-
-
-
-
-round_up( +, ahi, alo )
-round_down( +, ahi, alo )
+round_nearest(right_triangles_ratio, a, sqrt(a), c, cbrt(c))
+round_up(right_triangles_ratio, a, sqrt(a), c, cbrt(c))
+round_down(right_triangles_ratio, a, sqrt(a), c, cbrt(c))
 
 round_nearest_tiesaway( -, bhi, blo )
 round_nearest_tiesup( -, bhi, blo )
