@@ -79,6 +79,3 @@ round_nearest(right_triangles_ratio, a, sqrt(a), c, cbrt(c))
 round_up(right_triangles_ratio, a, sqrt(a), c, cbrt(c))
 round_down(right_triangles_ratio, a, sqrt(a), c, cbrt(c))
 
-round_nearest_tiesaway( -, bhi, blo )
-round_nearest_tiesup( -, bhi, blo )
-
