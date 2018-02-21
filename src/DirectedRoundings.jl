@@ -28,6 +28,7 @@ export  +, -, *, /, \, hypot, sqrt, cbrt,
     •    RoundDown
 =#
 
+
 @inline function rounded(fn::Function, a::T, 
                          mode::RoundingMode) where {T<:AbstractFloat}
      setrounding(T, mode) do
