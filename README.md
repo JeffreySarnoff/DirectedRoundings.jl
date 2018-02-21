@@ -4,3 +4,16 @@
 
 
 
+### The Rounding Modes
+
+    •    RoundNearest (default)
+
+    •    RoundUp
+    •    RoundDown
+        
+    •    RoundToZero
+    •    RoundFromZero
+
+    •    RoundNearestTiesAway
+    •    RoundNearestTiesUp
+    
