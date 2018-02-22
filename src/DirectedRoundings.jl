@@ -1,7 +1,8 @@
 module DirectedRoundings
 
 export RoundNearest, RoundUp, RoundDown, 
-       RoundToZero, RoundFromZero
+       RoundToZero, RoundFromZero,
+       RoundHiLo
        
 import Base: RoundNearest, RoundUp, RoundDown, RoundToZero, RoundFromZero
              +, -, *, /, \, hypot, sqrt, cbrt,
@@ -13,6 +14,8 @@ export  +, -, *, /, \, hypot, sqrt, cbrt,
         abs, flipsign, copysign
 
 using Base.Rounding
+
+const RoundHiLo = RoundingMode{:HiLo}()
 
 #=
     •    round the significand to use fewer bits
@@ -137,5 +140,30 @@ end
      end
 end
 
+# intervalic directed rounding in a functional context
+
+@inline function RoundHiLo(fn::Function, a::T) where {T<:AbstractFloat}
+     hi = rounded(fn, a, RoundUp)
+     lo = rounded(fn, a, RoundDown)
+     return minmax(hi, lo)
+end
+
+@inline function RoundHiLo(fn::Function, a::T, b::T) where {T<:AbstractFloat}
+     hi = rounded(fn, a, b, RoundUp)
+     lo = rounded(fn, a, b, RoundDown)
+     return minmax(hi, lo)
+end
+
+@inline function RoundHiLo(fn::Function, a::T, b::T, c::T) where {T<:AbstractFloat}
+     hi = rounded(fn, a, b, c, RoundUp)
+     lo = rounded(fn, a, b, c, RoundDown)
+     return minmax(hi, lo)
+end
+
+@inline function RoundHiLo(fn::Function, a::T, b::T, c::T, d::T) where {T<:AbstractFloat}
+     hi = rounded(fn, a, b, c, d, RoundUp)
+     lo = rounded(fn, a, b, c, d, RoundDown)
+     return minmax(hi, lo)
+end
 
 end # DirectedRoundings module
