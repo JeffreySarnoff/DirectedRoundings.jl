@@ -2,7 +2,7 @@ module DirectedRoundings
 
 export RoundNearest, RoundUp, RoundDown, 
        RoundToZero, RoundFromZero,
-       RoundHiLo
+       RoundHiLo, RoundValue
        
 import Base: RoundNearest, RoundUp, RoundDown, RoundToZero, RoundFromZero
              +, -, *, /, \, hypot, sqrt, cbrt,
@@ -15,7 +15,8 @@ export  +, -, *, /, \, hypot, sqrt, cbrt,
 
 using Base.Rounding
 
-const RoundHiLo = RoundingMode{:HiLo}()
+const RoundHiLo  = RoundingMode{:HiLo}()
+const RoundValue = RoundingMode{:Value}()
 
 #=
     •    round the significand to use fewer bits
@@ -141,29 +142,59 @@ end
 end
 
 # intervalic directed rounding in a functional context
+@inline maxmin(a, b) = b < a ? (a, b) : (b, a)
 
 @inline function RoundHiLo(fn::Function, a::T) where {T<:AbstractFloat}
      hi = rounded(fn, a, RoundUp)
      lo = rounded(fn, a, RoundDown)
-     return minmax(hi, lo)
+     return maxmin(hi, lo)
 end
 
 @inline function RoundHiLo(fn::Function, a::T, b::T) where {T<:AbstractFloat}
      hi = rounded(fn, a, b, RoundUp)
      lo = rounded(fn, a, b, RoundDown)
-     return minmax(hi, lo)
+     return maxmin(hi, lo)
 end
 
 @inline function RoundHiLo(fn::Function, a::T, b::T, c::T) where {T<:AbstractFloat}
      hi = rounded(fn, a, b, c, RoundUp)
      lo = rounded(fn, a, b, c, RoundDown)
-     return minmax(hi, lo)
+     return maxmin(hi, lo)
 end
 
 @inline function RoundHiLo(fn::Function, a::T, b::T, c::T, d::T) where {T<:AbstractFloat}
      hi = rounded(fn, a, b, c, d, RoundUp)
      lo = rounded(fn, a, b, c, d, RoundDown)
-     return minmax(hi, lo)
+     return maxmin(hi, lo)
+end
+
+# obtain the most informing, least misleading representation of value
+
+const twopowex = [2.0, 4.0, 8.0, 16.0, 32.0, 64.0]
+
+function RoundValue(fn::Function, a::T) where {T<:AbstractFloat}
+   hi, lo = RoundHiLo(fn, a)
+   frhi, exhi = frexp(hi)
+   frlo, exlo = frexp(lo)
+   if exhi !== exlo
+      dex = exhi - exlo
+      fex = dex < 7 ? twopowex[dex] : 2.0^dex
+      frlo = frlo * fex
+      frex = frex - dex
+   end
+   signifhi = frhi
+   signiflo = frlo
+   sigbits  = 53
+   while sigbits > 0 && (signifhi !== signiflo)
+      sigbits -= 1
+      signifhi = signif(hi, sigbits, 2)
+      signiflo = signif(lo, sigbits, 2)
+   end
+   if sigbits == 0 && (signifhi !== signiflo)
+       span = hi - lo
+       throw(ErrorException("interval [$lo, $hi] spans $span, which does not resolve"))
+   end
+   return signiflo  
 end
 
 end # DirectedRoundings module
