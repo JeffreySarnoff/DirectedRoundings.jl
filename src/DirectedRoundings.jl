@@ -27,37 +27,7 @@ using Base.Rounding
         •    RoundFromZero
 =#
 
-# allow multiparameter operators takeing 1, 2, 3, or 4 args
-
-@inline function rounded(fn::Function, a::T, 
-                         mode::RoundingMode) where {T<:AbstractFloat}
-     setrounding(T, mode) do
-         fn(a)
-     end
-end
-
-@inline function rounded(fn::Function, a::T, b::T, 
-                         mode::RoundingMode) where {T<:AbstractFloat}
-     setrounding(T, mode) do
-         fn(a, b)
-     end
-end
-
-@inline function rounded(fn::Function, a::T, b::T, c::T, 
-                         mode::RoundingMode) where {T<:AbstractFloat}
-     setrounding(T, mode) do
-         fn(a, b, c)
-     end
-end
-
-@inline function rounded(fn::Function, a::T, b::T, c::T, d::T,
-                         mode::RoundingMode) where {T<:AbstractFloat}
-     setrounding(T, mode) do
-         fn(a, b, c, d)
-     end
-end
-
-
+# allow multiparameter operators taking 1, 2, 3, or 4 args
 
 @inline RoundNearest(fn::Function, a::T) where {T<:AbstractFloat} =
     rounded(fn, a, RoundNearest)
@@ -95,6 +65,8 @@ end
 @inline RoundToZero(fn::Function, a::T, b::T, c::T, d::T) where {T<:AbstractFloat} =
     rounded(fn, a, b, c, d, RoundToZero)
 
+# support RoundFromZero
+
 @inline RoundFromZero(fn::Function, a::T) where {T<:BigFloat} =
     rounded(fn, a, RoundFromZero)
 @inline RoundFromZero(fn::Function, a::T, b::T) where {T<:BigFloat} =
@@ -105,7 +77,6 @@ end
     rounded(fn, a, b, c, d, RoundFromZero)
 
 
-# other Floats
 
 @inline function RoundFromZero(fn::Function, a::T) where {T<:AbstractFloat}
     result = RoundUp(a, b)
@@ -114,7 +85,6 @@ end
     end
     return result
 end
-
 @inline function RoundFromZero(fn::Function, a::T, b::T) where {T<:AbstractFloat}
     result = RoundUp(a, b)
     if result < 0
@@ -122,7 +92,6 @@ end
     end
     return result
 end
-
 @inline function RoundFromZero(fn::Function, a::T, b::T, c::T) where {T<:AbstractFloat}
     result = RoundUp(a, b, c)
     if result < 0
@@ -130,7 +99,6 @@ end
     end
     return result
 end
-
 @inline function RoundFromZero(fn::Function, a::T, b::T, c::T, d::T) where {T<:AbstractFloat}
     result = RoundUp(a, b, c, d)
     if result < 0
@@ -138,5 +106,36 @@ end
     end
     return result
 end
+
+# directed rounding in a functional context
+
+@inline function rounded(fn::Function, a::T, 
+                         mode::RoundingMode) where {T<:AbstractFloat}
+     setrounding(T, mode) do
+         fn(a)
+     end
+end
+
+@inline function rounded(fn::Function, a::T, b::T, 
+                         mode::RoundingMode) where {T<:AbstractFloat}
+     setrounding(T, mode) do
+         fn(a, b)
+     end
+end
+
+@inline function rounded(fn::Function, a::T, b::T, c::T, 
+                         mode::RoundingMode) where {T<:AbstractFloat}
+     setrounding(T, mode) do
+         fn(a, b, c)
+     end
+end
+
+@inline function rounded(fn::Function, a::T, b::T, c::T, d::T,
+                         mode::RoundingMode) where {T<:AbstractFloat}
+     setrounding(T, mode) do
+         fn(a, b, c, d)
+     end
+end
+
 
 end # DirectedRoundings module
