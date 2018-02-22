@@ -2,7 +2,7 @@ module DirectedRoundings
 
 export RoundNearest, RoundUp, RoundDown, 
        RoundToZero, RoundFromZero,
-       RoundHiLo, RoundValue
+       RoundLoHi, RoundValue
        
 import Base: RoundNearest, RoundUp, RoundDown, RoundToZero, RoundFromZero
              +, -, *, /, \, hypot, sqrt, cbrt,
@@ -15,7 +15,7 @@ export  +, -, *, /, \, hypot, sqrt, cbrt,
 
 using Base.Rounding
 
-const RoundHiLo  = RoundingMode{:HiLo}()
+const RoundLoHi  = RoundingMode{:HiLo}()
 const RoundValue = RoundingMode{:Value}()
 
 #=
@@ -141,31 +141,30 @@ end
      end
 end
 
-# intervalic directed rounding in a functional context
-@inline maxmin(a, b) = b < a ? (a, b) : (b, a)
+# bidirectional rounding in a functional context
 
-@inline function RoundHiLo(fn::Function, a::T) where {T<:AbstractFloat}
+@inline function RoundLoHi(fn::Function, a::T) where {T<:AbstractFloat}
      hi = rounded(fn, a, RoundUp)
      lo = rounded(fn, a, RoundDown)
-     return maxmin(hi, lo)
+     return minmax(hi, lo)
 end
 
-@inline function RoundHiLo(fn::Function, a::T, b::T) where {T<:AbstractFloat}
+@inline function RoundLoHi(fn::Function, a::T, b::T) where {T<:AbstractFloat}
      hi = rounded(fn, a, b, RoundUp)
      lo = rounded(fn, a, b, RoundDown)
-     return maxmin(hi, lo)
+     return minmax(hi, lo)
 end
 
-@inline function RoundHiLo(fn::Function, a::T, b::T, c::T) where {T<:AbstractFloat}
+@inline function RoundLoHi(fn::Function, a::T, b::T, c::T) where {T<:AbstractFloat}
      hi = rounded(fn, a, b, c, RoundUp)
      lo = rounded(fn, a, b, c, RoundDown)
-     return maxmin(hi, lo)
+     return minmax(hi, lo)
 end
 
-@inline function RoundHiLo(fn::Function, a::T, b::T, c::T, d::T) where {T<:AbstractFloat}
+@inline function RoundLoHi(fn::Function, a::T, b::T, c::T, d::T) where {T<:AbstractFloat}
      hi = rounded(fn, a, b, c, d, RoundUp)
      lo = rounded(fn, a, b, c, d, RoundDown)
-     return maxmin(hi, lo)
+     return minmax(hi, lo)
 end
 
 # obtain the most informing, least misleading representation of value
@@ -173,7 +172,7 @@ end
 const twopowex = [2.0, 4.0, 8.0, 16.0, 32.0, 64.0]
 
 function RoundValue(fn::Function, a::T) where {T<:AbstractFloat}
-   hi, lo = RoundHiLo(fn, a)
+   hi, lo = RoundLoHi(fn, a)
    frhi, exhi = frexp(hi)
    frlo, exlo = frexp(lo)
    if exhi !== exlo
