@@ -3,32 +3,27 @@
 ## round floating point arithmetic as you direct
 
 
-
-### The Rounding Modes
-
-    •    RoundNearest (default)
-
-    •    RoundUp
-    •    RoundDown
-        
-    •    RoundToZero
-    •    RoundFromZero
-
-    •    RoundNearestTiesAway
-    •    RoundNearestTiesUp
-    
 ### The Exported Functions
 
-    •   round_nearest
+    z = fn(xs...) evaluated with directed rounding
+
+    •   RoundNearest
+    •   RoundUp
+    •   RoundDown 
     
-    •   round_up
-    •   round_down 
+    z = fn(xs...) evaluated with directed rounding
+       is rounded to the directed adjacent integer
     
-    •   round_tozero
-    •   round_fromzero
+    •   RoundToZero
+    •   RoundFromZero
     
-    •   round_nearest_tiesaway
-    •   round_nearest_tiesup
+    z = fn(xs...) evaluated by rounding in both directions
+        minmax( RoundDown(fn,xs...), RoundUp(fn, xs...) )
+                       [ lowerbound, upperbound ]
+    •   RoundLoHi
+    
+    z = fn(xs...) obtains the most informing, least misleading valuation
+    •   RoundValue
 
 ### In Use
 
