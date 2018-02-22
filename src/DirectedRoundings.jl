@@ -1,33 +1,33 @@
 module DirectedRoundings
 
-export round_nearest, round_up, round_down, 
-       round_tozero, round_fromzero,
-       round_nearest_tiesaway, round_nearest_tiesup
-
-import Base: +, -, *, /, \, hypot, sqrt, cbrt,
+export RoundNearest, RoundUp, RoundDown, 
+       RoundToZero, RoundFromZero
+       
+import Base: RoundNearest, RoundUp, RoundDown, RoundToZero, RoundFromZero
+             +, -, *, /, \, hypot, sqrt, cbrt,
              div, fld, cld, mod, rem, divrem, fldmod,
-             abs, flipsign, copysign
+             abs, flipsign, copysign,
 
 export  +, -, *, /, \, hypot, sqrt, cbrt,
         div, fld, cld, mod, rem, divrem, fldmod,
         abs, flipsign, copysign
 
+using Base.Rounding
+
 #=
-    •    RoundNearest (default)
-      
-    •    RoundNearestTiesAway
-      
-    •    RoundNearestTiesUp
-      
-    •    RoundToZero
-      
-    •    RoundFromZero
-      
-    •    RoundUp
-      
-    •    RoundDown
+    •    round the significand to use fewer bits
+    
+        •    RoundNearest (default)
+        •    RoundUp
+        •    RoundDown
+
+    •    round the floating point value to an integer
+    
+        •    RoundToZero
+        •    RoundFromZero
 =#
 
+# allow multiparameter operators takeing 1, 2, 3, or 4 args
 
 @inline function rounded(fn::Function, a::T, 
                          mode::RoundingMode) where {T<:AbstractFloat}
@@ -58,95 +58,83 @@ end
 end
 
 
-@inline round_nearest(fn::Function, a::T) where {T<:AbstractFloat} =
+
+@inline RoundNearest(fn::Function, a::T) where {T<:AbstractFloat} =
     rounded(fn, a, RoundNearest)
-@inline round_nearest(fn::Function, a::T, b::T) where {T<:AbstractFloat} =
+@inline RoundNearest(fn::Function, a::T, b::T) where {T<:AbstractFloat} =
     rounded(fn, a, b, RoundNearest)
-@inline round_nearest(fn::Function, a::T, b::T, c::T) where {T<:AbstractFloat} =
+@inline RoundNearest(fn::Function, a::T, b::T, c::T) where {T<:AbstractFloat} =
     rounded(fn, a, b, c, RoundNearest)
-@inline round_nearest(fn::Function, a::T, b::T, c::T, d::T) where {T<:AbstractFloat} =
+@inline RoundNearest(fn::Function, a::T, b::T, c::T, d::T) where {T<:AbstractFloat} =
     rounded(fn, a, b, c, d, RoundNearest)
 
-@inline round_nearest_tiesaway(fn::Function, a::T) where {T<:AbstractFloat} =
-    rounded(fn, a, RoundNearestTiesAway)
-@inline round_nearest_tiesaway(fn::Function, a::T, b::T) where {T<:AbstractFloat} =
-    rounded(fn, a, b, RoundNearestTiesAway)
-@inline round_nearest_tiesaway(fn::Function, a::T, b::T, c::T) where {T<:AbstractFloat} =
-    rounded(fn, a, b, c, RoundNearestTiesAway)
-@inline round_nearest_tiesaway(fn::Function, a::T, b::T, c::T, d::T) where {T<:AbstractFloat} =
-    rounded(fn, a, b, c, d, RoundNearestTiesAway)
-
-@inline round_nearest_tiesup(fn::Function, a::T) where {T<:AbstractFloat} =
-    rounded(fn, a, RoundNearestTiesUp)
-@inline round_nearest_tiesup(fn::Function, a::T, b::T) where {T<:AbstractFloat} =
-    rounded(fn, a, b, RoundNearestTiesUp)
-@inline round_nearest_tiesup(fn::Function, a::T, b::T, c::T) where {T<:AbstractFloat} =
-    rounded(fn, a, b, c, RoundNearestTiesUp)
-@inline round_nearest_tiesup(fn::Function, a::T, b::T, c::T, d::T) where {T<:AbstractFloat} =
-    rounded(fn, a, b, c, d, RoundNearestTiesUp)
-
-@inline round_up(fn::Function, a::T) where {T<:AbstractFloat} =
+@inline RoundUp(fn::Function, a::T) where {T<:AbstractFloat} =
     rounded(fn, a, RoundUp)
-@inline round_up(fn::Function, a::T, b::T) where {T<:AbstractFloat} =
+@inline RoundUp(fn::Function, a::T, b::T) where {T<:AbstractFloat} =
     rounded(fn, a, b, RoundUp)
-@inline round_up(fn::Function, a::T, b::T, c::T) where {T<:AbstractFloat} =
+@inline RoundUp(fn::Function, a::T, b::T, c::T) where {T<:AbstractFloat} =
     rounded(fn, a, b, c, RoundUp)
-@inline round_up(fn::Function, a::T, b::T, c::T, d::T) where {T<:AbstractFloat} =
+@inline RoundUp(fn::Function, a::T, b::T, c::T, d::T) where {T<:AbstractFloat} =
     rounded(fn, a, b, c, d, RoundUp)
 
-@inline round_down(fn::Function, a::T) where {T<:AbstractFloat} =
+@inline RoundDown(fn::Function, a::T) where {T<:AbstractFloat} =
     rounded(fn, a, RoundDown)
-@inline round_down(fn::Function, a::T, b::T) where {T<:AbstractFloat} =
+@inline RoundDown(fn::Function, a::T, b::T) where {T<:AbstractFloat} =
     rounded(fn, a, b, RoundDown)
-@inline round_down(fn::Function, a::T, b::T, c::T) where {T<:AbstractFloat} =
+@inline RoundDown(fn::Function, a::T, b::T, c::T) where {T<:AbstractFloat} =
     rounded(fn, a, b, c, RoundDown)
-@inline round_down(fn::Function, a::T, b::T, c::T, d::T) where {T<:AbstractFloat} =
+@inline RoundDown(fn::Function, a::T, b::T, c::T, d::T) where {T<:AbstractFloat} =
     rounded(fn, a, b, c, d, RoundDown)
 
-@inline round_tozero(fn::Function, a::T) where {T<:AbstractFloat} =
+@inline RoundToZero(fn::Function, a::T) where {T<:AbstractFloat} =
     rounded(fn, a, RoundToZero)
-@inline round_tozero(fn::Function, a::T, b::T) where {T<:AbstractFloat} =
+@inline RoundToZero(fn::Function, a::T, b::T) where {T<:AbstractFloat} =
     rounded(fn, a, b, RoundToZero)
-@inline round_tozero(fn::Function, a::T, b::T, c::T) where {T<:AbstractFloat} =
+@inline RoundToZero(fn::Function, a::T, b::T, c::T) where {T<:AbstractFloat} =
     rounded(fn, a, b, c, RoundToZero)
-@inline round_tozero(fn::Function, a::T, b::T, c::T, d::T) where {T<:AbstractFloat} =
+@inline RoundToZero(fn::Function, a::T, b::T, c::T, d::T) where {T<:AbstractFloat} =
     rounded(fn, a, b, c, d, RoundToZero)
 
-@inline round_fromzero(fn::Function, a::T) where {T<:BigFloat} =
+@inline RoundFromZero(fn::Function, a::T) where {T<:BigFloat} =
     rounded(fn, a, RoundFromZero)
-@inline round_fromzero(fn::Function, a::T, b::T) where {T<:BigFloat} =
+@inline RoundFromZero(fn::Function, a::T, b::T) where {T<:BigFloat} =
     rounded(fn, a, b, RoundFromZero)
-@inline round_fromzero(fn::Function, a::T, b::T, c::T) where {T<:BigFloat} =
+@inline RoundFromZero(fn::Function, a::T, b::T, c::T) where {T<:BigFloat} =
     rounded(fn, a, b, c, RoundFromZero)
-@inline round_fromzero(fn::Function, a::T, b::T, c::T, d::T) where {T<:BigFloat} =
+@inline RoundFromZero(fn::Function, a::T, b::T, c::T, d::T) where {T<:BigFloat} =
     rounded(fn, a, b, c, d, RoundFromZero)
+
 
 # other Floats
 
-@inline function round_fromzero(fn::Function, a::T) where {T<:AbstractFloat}
-    signbit(a) ? round_down(fn, a) : round_up(fn, a)
-end
-
-@inline function round_fromzero(fn::Function, a::T, b::T) where {T<:AbstractFloat}
-    result = round_up(a, b)
+@inline function RoundFromZero(fn::Function, a::T) where {T<:AbstractFloat}
+    result = RoundUp(a, b)
     if result < 0
-       result = round_down(a, b)
+       result = RoundDown(a, b)
     end
     return result
 end
 
-@inline function round_fromzero(fn::Function, a::T, b::T, c::T) where {T<:AbstractFloat}
-    result = round_up(a, b, c)
+@inline function RoundFromZero(fn::Function, a::T, b::T) where {T<:AbstractFloat}
+    result = RoundUp(a, b)
     if result < 0
-       result = round_down(a, b, c)
+       result = RoundDown(a, b)
     end
     return result
 end
 
-@inline function round_fromzero(fn::Function, a::T, b::T, c::T, d::T) where {T<:AbstractFloat}
-    result = round_up(a, b, c, d)
+@inline function RoundFromZero(fn::Function, a::T, b::T, c::T) where {T<:AbstractFloat}
+    result = RoundUp(a, b, c)
     if result < 0
-       result = round_down(a, b, c, d)
+       result = RoundDown(a, b, c)
+    end
+    return result
+end
+
+@inline function RoundFromZero(fn::Function, a::T, b::T, c::T, d::T) where {T<:AbstractFloat}
+    result = RoundUp(a, b, c, d)
+    if result < 0
+       result = RoundDown(a, b, c, d)
     end
     return result
 end
